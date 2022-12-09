@@ -2,7 +2,8 @@
 
 # This is a Python script for pinging various DNS services and writing the results to a log file.
 # # This code is available on GitHub https://github.com/sacredbeacon/stoker
-
+#TODO: Fix the log file directorty structure
+#TODO: test on Linux
 
 import os
 import time
@@ -42,7 +43,7 @@ public_ip = urllib.request.urlopen('https://ident.me').read().decode('utf8')
 os_type = os.name
 
 # Print initial message
-print("Stöcke is running...")
+print("Stoker is running...")
 print("Public IP: " + public_ip)
 print("Start time: " + full_date_time)
 
@@ -67,6 +68,7 @@ else:
 
 # Run the ping command in a loop
 while True:    
+    
     # Create the month folder in the year folder
     if not os.path.exists(year_folder_name + "/" + month_folder_name):
         os.makedirs(year_folder_name + "/" + month_folder_name)
@@ -82,13 +84,14 @@ while True:
         print("Log file created")
     else:
         print("Log file already exists. Skipping...")
+        
     # Check the operating system type and ping the IP using the appropriate command
     if os_type == "nt":
         # Windows
         ping_command = f"ping {chosen_dns_server}"
     else:
         # POSIX
-        ping_command = f"ping {chosen_dns_server}"
+        ping_command = f"ping -c 4 {chosen_dns_server}"
     # Ping the IP address
     ping_output = os.popen(ping_command).read()
 
@@ -107,10 +110,10 @@ while True:
                    " DNS Server: " + chosen_dns_server +
                    "\nResults: " + ping_results)
     log_file.close()
-    
 
     # Wait 10 seconds before repeating the loop
     print("Sleeping for " + str(sleep_time()) + " seconds...")
+    
     time.sleep(sleep_time())
     
     #change the dns server
