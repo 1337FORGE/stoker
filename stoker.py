@@ -1,4 +1,4 @@
-#!/bin/bash/python3
+#!/bin/bash/env python3
 
 # This is a Python script for pinging various DNS services and writing the results to a log file.
 # # This code is available on GitHub https://github.com/sacredbeacon/stoker
