@@ -10,6 +10,7 @@ The script will create subdirectories for the year and month, and then create a 
 ## Changelog
 ### v1.1 (2022-12-09)
 - Created a new function to check if the internet connection is available.
+- Added ping time average
 - Cleaned up the log result to make it easier to read.
 - Cleaned up the code to make it easier to read.
 - Added banner and visual improvements.
