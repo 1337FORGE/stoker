@@ -1,12 +1,18 @@
 # Stôker
-This is a Python script for pinging various DNS services and writing the results to a log file.
+This is a Python script for checking internet connectivity and logging the results.
 
 ## Description
-The script will create subdirectories for the year and month, and then create a log file with the date in its name. The log file will be added to the month's directory. The log file will include your public IP address and the current date at the top, and will include the time and the DNS server being pinged before each entry.
+Stoker script is designed to ping different DNS services and check if the internet is up or down. The script can be used to monitor internet connectivity and log the results to a file for future reference.
 
 ## Latest changes
 - Version 1.1 added
 - Version 1.0 added
+
+## Features
+- The script will log the machine name, operating system, MAC address, and both public and private IP addresses.
+- The script will create a neat log file structure organized by year/month/ (yyyy/mm/). Each log file will then be named using the date it was created (dd-mm-yy.log).
+- The script will notify you if your system is not connected to the internet, and will continuously check for a connection every 5 seconds until it is successful.
+- The script will print the results in the terminal as it logs them.
 
 ## Changelog
 ### v1.1.0 (2022-12-09)
@@ -20,3 +26,5 @@ The script will create subdirectories for the year and month, and then create a 
 
 ## Todo
 - Fix Linux issue to return the summary of ping time.
+- Logging the results if internet is down. (In currenct version it exits the script)
+- Fix the private ip
