@@ -2,6 +2,8 @@
 
 # This is a Python script for pinging various DNS services and writing the results to a log file.
 # # This code is available on GitHub https://github.com/sacredbeacon/stoker
+
+#TODO: Filter the result for cleaner output
 #TODO: Fix the log file directorty structure
 #TODO: test on Linux
 
@@ -26,6 +28,8 @@ def sleep_time():
     sleep_time = random.randint(10, 30)
     return sleep_time
 
+
+#FIXME: Create a simple list of DNS servers to ping, do not name them.
 ## DNS Variables
 google_dns = "8.8.8.8"
 google_secondary_dns = "8.8.4.4"
@@ -39,7 +43,7 @@ chosen_dns_server = random.choice(dns_servers)
 ## Network Variables
 public_ip = urllib.request.urlopen('https://ident.me').read().decode('utf8')
 
-# Get the OS type
+# OS Type
 os_type = os.name
 
 # Print initial message
@@ -47,27 +51,28 @@ print("Stoker is running...")
 print("Public IP: " + public_ip)
 print("Start time: " + full_date_time)
 
-# Check the operating system type
-if os.name == "nt":
-    # Windows
-    os_type = "Windows"
-else:
-    # Linux
-    os_type = "Linux"
+# Check for the OS type
+operation_system = os.name
+if operation_system == 'nt':
+    operation_system = 'Windows'
+elif operation_system == 'posix':
+    operation_system = 'Linux'
+
 
 # Print the value of the os_type variable
-print("OS type: " + os_type)
+print("OS type: " + operation_system)
 
-# Create the year folder
-if not os.path.exists(year_folder_name):
-    os.makedirs(year_folder_name)
-    print("Year folder created")
-else:
-    print("Year folder already exists. Skipping...")
     
 
 # Run the ping command in a loop
-while True:    
+while True:
+    #FIXME: Fix the log file directory structure based on Windows or linux
+    # Create the year folder
+    if not os.path.exists(year_folder_name):
+        os.makedirs(year_folder_name)
+        print("Year folder created")
+    else:
+        print("Year folder already exists. Skipping...")
     
     # Create the month folder in the year folder
     if not os.path.exists(year_folder_name + "/" + month_folder_name):
@@ -79,33 +84,39 @@ while True:
     # Create the log file
     if not os.path.exists(year_folder_name + "/" + month_folder_name + "/" + full_date + ".log"):
         log_file = open(year_folder_name + "/" + month_folder_name + "/" + full_date + ".log", "a")
-        log_file.write("Stocke logs file for " + str(public_ip) + "\nLog file created at: " + str(full_date_time) + " \n")
+        log_file.write("Stoker logs file for " + str(public_ip) + "\nLog file created at: " + str(full_date_time) + " \n")
         log_file.close()
         print("Log file created")
     else:
         print("Log file already exists. Skipping...")
         
     # Check the operating system type and ping the IP using the appropriate command
-    if os_type == "nt":
+    if operation_system == "Windows":
         # Windows
         ping_command = f"ping {chosen_dns_server}"
-    else:
-        # POSIX
+    elif operation_system == "Linux":
+        # Linux
         ping_command = f"ping -c 4 {chosen_dns_server}"
+    else:
+        print("OS type not recognized. Exiting...")
+        exit()
     # Ping the IP address
     ping_output = os.popen(ping_command).read()
 
-    # Filter the results if the IP is live
-    if "ttl" or "TTL" in ping_output.lower():
-        ping_results = ping_output
+# if ping output contains "%" and numbers betweek 50 and 100, then "Host is up"
+    if "0%" in ping_output:
+        ping_results = "Host is up"
+    elif "100%" in ping_output:
+        ping_results = "Host is down"
     else:
-        ping_results = "No live IPs found."
+        ping_results = "Trying another DNS server"
 
     # Print the results
     print(ping_results)
     
     # Append the results to the log file
     log_file = open(year_folder_name + "/" + month_folder_name + "/" + full_date + ".log", "a")
+    
     log_file.write("\nTime: " + datetime.now().strftime("%H:%M:%S") +
                    " DNS Server: " + chosen_dns_server +
                    "\nResults: " + ping_results)
