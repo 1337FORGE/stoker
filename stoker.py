@@ -3,8 +3,12 @@
 # This is a Python script for pinging various DNS services and writing the results to a log file.
 # # This code is available on GitHub https://github.com/sacredbeacon/stoker
 
+#FIXME: When pinging with no internet connection, the script shows hosts as up, FIX IT!
+#FIXME: When no internet, the public ip function crashes
 #TODO: Filter the result for cleaner output
 #TODO: Fix the log file directorty structure
+#TODO: Add the machine name to the log file
+#TODO: Add the Mac address to the log file
 #TODO: test on Linux
 
 import os
@@ -14,6 +18,7 @@ from datetime import datetime
 import random
 import socket
 import urllib.request
+import uuid
 
 # Variables
 ## Date and Time Variables
@@ -29,68 +34,78 @@ def sleep_time():
     return sleep_time
 
 
-#FIXME: Create a simple list of DNS servers to ping, do not name them.
 ## DNS Variables
-google_dns = "8.8.8.8"
-google_secondary_dns = "8.8.4.4"
-cloudflare_dns = "1.1.1.1"
-quad9_dns = "9.9.9.9"
-opendns_dns = "208.67.222.222"
-cisco_dns = "208.67.222.222"
-dns_servers = [google_dns, google_secondary_dns, cloudflare_dns, quad9_dns, opendns_dns, cisco_dns]
+dns_servers = ["8.8.8.8", "8.8.4.4", "1.1.1.1", "9.9.9.9", "208.67.222.222",
+               "149.112.112.112", "208.67.220.220", "1.0.0.1", "8.20.247.20",
+               "8.26.56.26", "185.228.169.168", "185.225.168.168", "76.76.19.19",
+               "76.223.122.150", "176.103.130.130", "176.103.130.131", "64.6.64.6",
+               "64.6.65.6", "216.87.84.211", "77.88.8.8", "84.200.69.80", "84.200.70.40"]
 chosen_dns_server = random.choice(dns_servers)
 
 ## Network Variables
+
+#TODO: Fix the network connection check,
+#TODO: checking the network connection and public IP, if no connection, skip the script
+
+### Public IP
 public_ip = urllib.request.urlopen('https://ident.me').read().decode('utf8')
+### Private IP
+private_ip = socket.gethostbyname(socket.gethostname())
+### MAC Address
+mac_address = uuid.getnode()
+mac_address_str = ':'.join(['{:02x}'.format((mac_address >> ele) & 0xff) for ele in range(0,8*6,8)][::-1])
 
-# OS Type
-os_type = os.name
-
-# Print initial message
-print("Stoker is running...")
-print("Public IP: " + public_ip)
-print("Start time: " + full_date_time)
-
-# Check for the OS type
+# Checking for the OS type
 operation_system = os.name
 if operation_system == 'nt':
     operation_system = 'Windows'
 elif operation_system == 'posix':
     operation_system = 'Linux'
 
+# Machine Name
+machine_name = socket.gethostname()
 
-# Print the value of the os_type variable
-print("OS type: " + operation_system)
+# Print initial messages
+print("***Stoker Ping Script***")
+print("[*] Start time: " + full_date_time)
+print("[*] Machine name: " + machine_name)
+print("[*] OS type: " + operation_system)
+print("[*] MAC Address: " + mac_address_str)
+print("[*] Public IP: " + public_ip)
+print("[*] Private IP: " + private_ip)
 
-    
-
-# Run the ping command in a loop
+# Main loop
 while True:
     #FIXME: Fix the log file directory structure based on Windows or linux
-    # Create the year folder
+
+    # Creating the year folder
     if not os.path.exists(year_folder_name):
         os.makedirs(year_folder_name)
-        print("Year folder created")
-    else:
-        print("Year folder already exists. Skipping...")
     
-    # Create the month folder in the year folder
+    # Creating the month folder in the year folder
     if not os.path.exists(year_folder_name + "/" + month_folder_name):
         os.makedirs(year_folder_name + "/" + month_folder_name)
-        print("Month folder created")
-    else:
-        print("Month folder already exists. Skipping...")
         
-    # Create the log file
+    # Creating the log file
     if not os.path.exists(year_folder_name + "/" + month_folder_name + "/" + full_date + ".log"):
         log_file = open(year_folder_name + "/" + month_folder_name + "/" + full_date + ".log", "a")
-        log_file.write("Stoker logs file for " + str(public_ip) + "\nLog file created at: " + str(full_date_time) + " \n")
+        log_file.write(
+            "Date & Time: " + str(full_date_time) +
+            "\nStoker Machine: " + str(machine_name) +
+            "\nMAC Address: " + str(mac_address_str) +
+            "\nPublic IP: " + str(public_ip) +
+            "\nPrivate IP: " + str(private_ip) +
+            "\n"
+        )
         log_file.close()
         print("Log file created")
     else:
         print("Log file already exists. Skipping...")
+    
+    # Printing DNS server
+    print("[!] DNS server: " + chosen_dns_server)
         
-    # Check the operating system type and ping the IP using the appropriate command
+    # Checking the operating system type and ping the IP using the appropriate command
     if operation_system == "Windows":
         # Windows
         ping_command = f"ping {chosen_dns_server}"
@@ -103,18 +118,18 @@ while True:
     # Ping the IP address
     ping_output = os.popen(ping_command).read()
 
-# if ping output contains "%" and numbers betweek 50 and 100, then "Host is up"
+    # Results 
     if "0%" in ping_output:
-        ping_results = "Host is up"
+        ping_results = "[+] Host is up"
     elif "100%" in ping_output:
-        ping_results = "Host is down"
+        ping_results = "[-] Host is down"
     else:
-        ping_results = "Trying another DNS server"
+        ping_results = "[!] Host seems down, trying another DNS server"
 
     # Print the results
     print(ping_results)
     
-    # Append the results to the log file
+    # Appending the results to the log file
     log_file = open(year_folder_name + "/" + month_folder_name + "/" + full_date + ".log", "a")
     
     log_file.write("\nTime: " + datetime.now().strftime("%H:%M:%S") +
@@ -122,14 +137,14 @@ while True:
                    "\nResults: " + ping_results)
     log_file.close()
 
-    # Wait 10 seconds before repeating the loop
-    print("Sleeping for " + str(sleep_time()) + " seconds...")
+    # Random wait time
+    print("[!] Sleeping for " + str(sleep_time()) + " seconds")
     
     time.sleep(sleep_time())
     
-    #change the dns server
+    #Changing the DNS server
     chosen_dns_server = random.choice(dns_servers)
     
-    # Print the new DNS server
-    print("New DNS server: " + chosen_dns_server)
+    # Printing exit message
+    print("[*] To exit the script, press CTRL+C")
     
