@@ -1,5 +1,5 @@
 # Stôker
-This is a Python script for checking internet connectivity and logging the results.
+**Internet Connectivity Checker**
 
 ## Description
 Stoker script is designed to ping different DNS services and check if the internet is up or down. The script can be used to monitor internet connectivity and log the results to a file for future reference.
