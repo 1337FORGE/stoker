@@ -8,7 +8,12 @@ The script will create subdirectories for the year and month, and then create a 
 - Version 1.0 added
 
 ## Changelog
-### v1.0 (2022-12-09)
+### v1.1 (2022-12-09)
+- Created a new function to check if the internet connection is available.
+- Cleaned up the log result to make it easier to read.
+- Cleaned up the code to make it easier to read.
+- Added banner and visual improvements.
+### v1.0 (2022-12-08)
 - Initial release
 
 ## Todo
