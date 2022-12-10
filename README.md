@@ -9,10 +9,12 @@ Stoker script is designed to ping different DNS services and check if the intern
 - Version 1.0 added
 
 ## Features
-- The script will log the machine name, operating system, MAC address, and both public and private IP addresses.
-- The script will create a neat log file structure organized by year/month/ (yyyy/mm/). Each log file will then be named using the date it was created (dd-mm-yy.log).
-- The script will notify you if your system is not connected to the internet, and will continuously check for a connection every 5 seconds until it is successful.
-- The script will print the results in the terminal as it logs them.
+- The script logs machine name, operating system, MAC address, and both public and private IP addresses
+- DNS server is randomly selected from a list of providers to avoid false results
+- The delay between tests is randomly set between 10-30 seconds
+- The script creates a log file structure organized by year/month and names each log file using the date it was created
+- The script checks for internet connection and notifies the user if not connected, continuously checking every 5 seconds until a connection is established
+- The script prints the results in the terminal as they are logged
 
 ## Changelog
 ### v1.1.0 (2022-12-09)
