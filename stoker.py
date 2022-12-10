@@ -1,15 +1,7 @@
 #!/bin/bash/env python3
 
-# This is a Python script for pinging various DNS services and writing the results to a log file.
-# # This code is available on GitHub https://github.com/sacredbeacon/stoker
-
-#FIXME: When pinging with no internet connection, the script shows hosts as up, FIX IT!
-#FIXME: When no internet, the public ip function crashes
-#TODO: Filter the result for cleaner output
-#TODO: Fix the log file directorty structure
-#TODO: Add the machine name to the log file
-#TODO: Add the Mac address to the log file
-#TODO: test on Linux
+# Stoker is a simple internet connectivity checker that logs the results to a file
+## You can find the latest release on GitHub https://github.com/sacredbeacon/stoker
 
 import os
 import time
@@ -19,6 +11,21 @@ import random
 import socket
 import urllib.request
 import uuid
+import re
+
+# Banner
+banner = """
+  ____  _   //\  _             
+ / ___|| |_|/_\|| | _____ _ __ 
+ \___ \| __/ _ \| |/ / _ \ '__|
+  ___) | || (_) |   <  __/ |   
+ |____/ \__\___/|_|\_\___|_|   
+Internet Connectivity Checker
+"""
+divider = "==============================="
+
+# Print Script Name
+print(banner)
 
 # Variables
 ## Date and Time Variables
@@ -42,11 +49,26 @@ dns_servers = ["8.8.8.8", "8.8.4.4", "1.1.1.1", "9.9.9.9", "208.67.222.222",
                "64.6.65.6", "216.87.84.211", "77.88.8.8", "84.200.69.80", "84.200.70.40"]
 chosen_dns_server = random.choice(dns_servers)
 
+# Print divider
+print(divider)
+
 ## Network Variables
+### Internet Connectivity Check
+def internet_connectivity():
+    while True:
+        try:
+            urllib.request.urlopen('https://google.com', timeout=10)
+            print("[+] Internet is up")
+            return True
+        except urllib.request.URLError:
+            print("[-] Internet is down, trying again in 5 seconds")
+            time.sleep(5)
+            continue
 
-#TODO: Fix the network connection check,
-#TODO: checking the network connection and public IP, if no connection, skip the script
+if internet_connectivity():
+    pass
 
+    
 ### Public IP
 public_ip = urllib.request.urlopen('https://ident.me').read().decode('utf8')
 ### Private IP
@@ -66,7 +88,6 @@ elif operation_system == 'posix':
 machine_name = socket.gethostname()
 
 # Print initial messages
-print("***Stoker Ping Script***")
 print("[*] Start time: " + full_date_time)
 print("[*] Machine name: " + machine_name)
 print("[*] OS type: " + operation_system)
@@ -76,8 +97,16 @@ print("[*] Private IP: " + private_ip)
 
 # Main loop
 while True:
+    # Print divider
+    print(divider)
+    # Internet Connectivity Check
+    if internet_connectivity():
+        pass
+    
+    # Printing DNS server
+    print("[!] DNS server: " + chosen_dns_server)
+    
     #FIXME: Fix the log file directory structure based on Windows or linux
-
     # Creating the year folder
     if not os.path.exists(year_folder_name):
         os.makedirs(year_folder_name)
@@ -85,12 +114,13 @@ while True:
     # Creating the month folder in the year folder
     if not os.path.exists(year_folder_name + "/" + month_folder_name):
         os.makedirs(year_folder_name + "/" + month_folder_name)
-        
+            
     # Creating the log file
     if not os.path.exists(year_folder_name + "/" + month_folder_name + "/" + full_date + ".log"):
         log_file = open(year_folder_name + "/" + month_folder_name + "/" + full_date + ".log", "a")
         log_file.write(
-            "Date & Time: " + str(full_date_time) +
+            "Stoker Internet Connectivity Checker Log File\n"
+            "\nDate & Time: " + str(full_date_time) +
             "\nStoker Machine: " + str(machine_name) +
             "\nMAC Address: " + str(mac_address_str) +
             "\nPublic IP: " + str(public_ip) +
@@ -98,12 +128,9 @@ while True:
             "\n"
         )
         log_file.close()
-        print("Log file created")
+        print("[+] Log file created")
     else:
-        print("Log file already exists. Skipping...")
-    
-    # Printing DNS server
-    print("[!] DNS server: " + chosen_dns_server)
+        print("[-] Log file already exists")
         
     # Checking the operating system type and ping the IP using the appropriate command
     if operation_system == "Windows":
@@ -126,6 +153,11 @@ while True:
     else:
         ping_results = "[!] Host seems down, trying another DNS server"
 
+    # filter out the result between time= and ms and print it
+    ping_time = re.findall(r"time=(\d+)ms", ping_output)
+    # print(ping_time) average ping time
+    print("[+] Time: " + str(round(sum(map(int, ping_time)) / len(ping_time))) + "ms")
+
     # Print the results
     print(ping_results)
     
@@ -134,7 +166,10 @@ while True:
     
     log_file.write("\nTime: " + datetime.now().strftime("%H:%M:%S") +
                    " DNS Server: " + chosen_dns_server +
-                   "\nResults: " + ping_results)
+                   "\nResults: \n" 
+                   + ping_results +
+                   "\nTime: " + str(round(sum(map(int, ping_time)) / len(ping_time))) + "ms"
+                   )
     log_file.close()
 
     # Random wait time
@@ -148,3 +183,10 @@ while True:
     # Printing exit message
     print("[*] To exit the script, press CTRL+C")
     
+    
+# Fixes
+#TODO: Fix the log file directorty structure
+#TODO: test on Linux
+
+# Future Features
+# add a feature to do speed test every 60 seconds and log the results
