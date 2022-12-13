@@ -119,6 +119,8 @@ else:
     print("OS type not recognized. Exiting...")
     exit()
 
+   
+# Ping commands based on Operation System
 if operation_system == "Windows":
     # Windows
     ping_command = f"ping {chosen_dns_server}"
