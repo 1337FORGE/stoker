@@ -1,7 +1,9 @@
 #!/bin/bash/env python3
 
+
 # Stoker is a simple internet connectivity checker that logs the results to a file
 # You can find the latest release on GitHub https://github.com/sacredbeacon/stoker
+
 
 import os
 import time
@@ -12,6 +14,7 @@ import socket
 import urllib.request
 import uuid
 import re
+
 
 # Banner
 banner = """
@@ -24,8 +27,10 @@ Internet Connectivity Checker
 """
 divider = "==============================="
 
+
 # Print Script Name
 print(banner)
+
 
 # Variables
 # Date and Time Variables
@@ -46,35 +51,32 @@ dns_servers = ["8.8.8.8", "8.8.4.4", "1.1.1.1", "9.9.9.9", "208.67.222.222",
                "64.6.65.6", "216.87.84.211", "77.88.8.8", "84.200.69.80", "84.200.70.40"]
 chosen_dns_server = random.choice(dns_servers)
 
+
 # Print divider
 print(divider)
 
+
 # Main Functions
 # Defining sleep time function
-
-
 def sleep_time():
     sleep_time = random.randint(10, 30)
     return sleep_time
 
+  
 # FIXME: Fix the log file directory structure based on Windows or linux
 # Creating the year folder function
-
-
 def create_year_folder():
     if not os.path.exists(year_folder_name):
         os.makedirs(year_folder_name)
 
+
 # Creating the month folder in the year folder
-
-
 def create_month_folder():
     if not os.path.exists(year_folder_name + "/" + month_folder_name):
         os.makedirs(year_folder_name + "/" + month_folder_name)
 
+
 # Creating the log file
-
-
 def create_log_file():
     if not os.path.exists(year_folder_name + "/" + month_folder_name + "/" + full_date + ".log"):
         log_file = open(year_folder_name + "/" +
@@ -93,8 +95,8 @@ def create_log_file():
     else:
         print("[-] Log file already exists")
 
-# Internet Connectivity Check``
 
+# Internet Connectivity Check``
 def internet_connectivity():
     while True:
         try:
@@ -147,6 +149,7 @@ def ping_results():
         ping_results = "[!] Host seems down, trying another DNS server"
     return ping_results
 
+
 # Internet Connectivity Check on start
 internet_connectivity()
 
@@ -160,8 +163,10 @@ mac_address = uuid.getnode()
 mac_address_str = ':'.join(['{:02x}'.format(
     (mac_address >> ele) & 0xff) for ele in range(0, 8*6, 8)][::-1])
 
+
 # Machine Name
 machine_name = socket.gethostname()
+
 
 # Print initial messages
 print("[*] Start time: " + full_date_time)
@@ -171,32 +176,41 @@ print("[*] MAC Address: " + mac_address_str)
 print("[*] Public IP: " + public_ip)
 print("[*] Private IP: " + private_ip)
 
+
 # Main loop
 while True:
     # Print divider
     print(divider)
-    
+
+   
     # Internet Connectivity Check
     internet_connectivity()
 
+    
     # Printing DNS server
     print("[!] DNS server: " + chosen_dns_server)
 
+    
     # Creating the year folder
     create_year_folder()
 
+    
     # Creating the month folder in the year folder
     create_month_folder()
 
+    
     # Creating the log file
     create_log_file()
 
-    # Print ping results
     
+    # Print ping results
+    # I'm currently working on this function
 
+    
     # Ping the IP address
     ping_output = os.popen(ping_command).read()
 
+    
     # Appending the results to the log file
     log_file = open(year_folder_name + "/" +
                     month_folder_name + "/" + full_date + ".log", "a")
@@ -209,13 +223,16 @@ while True:
                    )
     log_file.close()
 
+    
     # Random wait time
     print("[!] Sleeping for " + str(sleep_time()) + " seconds")
 
     time.sleep(sleep_time())
 
+    
     # Changing the DNS server
     chosen_dns_server = random.choice(dns_servers)
 
+    
     # Printing exit message
     print("[*] To exit the script, press CTRL+C")
