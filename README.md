@@ -42,6 +42,10 @@ Average Ping Time: 20ms
 ```
 
 ## Changelog
+### v1.1.1 (2022-12-13)
+- Code clean up (It's not perfect but It's better than before)
+- There was problem with outputting ping results and averaging them so I temporary took it out of the code
+
 ### v1.1.0 (2022-12-09)
 - Created a new function to check if the internet connection is available.
 - Added ping time average
