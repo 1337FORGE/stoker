@@ -3,6 +3,7 @@
 
 # Stoker is a simple internet connectivity checker that logs the results to a file
 # You can find the latest release on GitHub https://github.com/sacredbeacon/stoker
+# Version 1.1.2
 
 
 import os
@@ -63,7 +64,6 @@ def sleep_time():
     return sleep_time
 
   
-# FIXME: Fix the log file directory structure based on Windows or linux
 # Creating the year folder function
 def create_year_folder():
     if not os.path.exists(year_folder_name):
@@ -170,6 +170,30 @@ mac_address_str = ':'.join(['{:02x}'.format(
 machine_name = socket.gethostname()
 
 
+# Raw ping output
+ping_output = os.popen(ping_command).read()
+
+
+# Sorted ping time list
+def ping_time_list():
+    if operation_system == "Windows":
+        ping_time_list = re.findall(r"time=(\d+)ms", ping_output)
+    elif operation_system == "Linux":
+        ping_time_list = re.findall(r"time=(\d+\.\d+) ms", ping_output)
+    return ping_time_list
+
+
+# Polished ping time list
+def ping_time_list_polished():
+    ping_time_list_polished = str(ping_time_list()).strip('[]')
+    ping_time_list_polished = ping_time_list_polished.replace("'", "")
+    return ping_time_list_polished
+
+
+# Ping Time Average
+## I'm currently working on this
+
+
 # Print initial messages
 print("[*] Start time: " + full_date_time)
 print("[*] Machine name: " + machine_name)
@@ -205,30 +229,28 @@ while True:
     create_log_file()
 
     
-    # Print ping results
-    # I'm currently working on this function
-
+    # Raw ping output
+    print("[+] Ping Times: " + ping_time_list_polished() + " ms")
     
-    # Ping the IP address
-    ping_output = os.popen(ping_command).read()
-
+    
+    # Ping time average
+    ## I'm currently working on this part
+    
     
     # Appending the results to the log file
     log_file = open(year_folder_name + "/" +
                     month_folder_name + "/" + full_date + ".log", "a")
-    
     log_file.write("\nTime: " + datetime.now().strftime("%H:%M:%S") +
                    " DNS Server: " + chosen_dns_server +
                    "\nResults: \n" +
-                   ping_results() +
-                   "\n"
+                   ping_results() + "\n" +
+                   "[+] Ping Times: " + ping_time_list_polished() + " ms" +"\n"
                    )
     log_file.close()
 
     
     # Random wait time
     print("[!] Sleeping for " + str(sleep_time()) + " seconds")
-
     time.sleep(sleep_time())
 
     
@@ -238,3 +260,5 @@ while True:
     
     # Printing exit message
     print("[*] To exit the script, press CTRL+C")
+    
+    
