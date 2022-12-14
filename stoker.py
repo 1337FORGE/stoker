@@ -158,12 +158,16 @@ internet_connectivity()
 
 # Public IP
 public_ip = urllib.request.urlopen('https://ident.me').read().decode('utf8')
+
+
 # Private IP
 private_ip = socket.gethostbyname(socket.gethostname())
+
+
 # MAC Address
 mac_address = uuid.getnode()
 mac_address_str = ':'.join(['{:02x}'.format(
-    (mac_address >> ele) & 0xff) for ele in range(0, 8*6, 8)][::-1])
+    (mac_address >> ma) & 0xff) for ma in range(0, 8*6, 8)][::-1])
 
 
 # Machine Name
