@@ -44,22 +44,23 @@ Results:
 ```
 
 ## Changelog
-### v1.1.2 (2022-12-13)
-- Got the ping times list to work in both Linux and Windows
-- Result file now contains ping times
+### v1.0 (2022-12-08)
+- Initial release
 
-### v1.1.1 (2022-12-12)
-- Code clean up (It's not perfect but It's better than before)
-- There was problem with outputting ping results and averaging them so I temporary took it out of the code
-
-### v1.1.0 (2022-12-09)
+#### v1.1.0 (2022-12-09)
 - Created a new function to check if the internet connection is available.
 - Added ping time average
 - Cleaned up the log result to make it easier to read.
 - Cleaned up the code to make it easier to read.
 - Added banner and visual improvements.
-### v1.0 (2022-12-08)
-- Initial release
+
+#### v1.1.1 (2022-12-12)
+- Code clean up (It's not perfect but It's better than before).
+- There was problem with outputting ping results and averaging them so I temporary took it out of the code.
+
+#### v1.1.2 (2022-12-13)
+- Got the ping times list to work in both Linux and Windows.
+- Result file now contains ping times.
 
 ## Todo
 - Fix Linux issue to return the summary of ping time.
