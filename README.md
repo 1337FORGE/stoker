@@ -21,28 +21,34 @@ Use ctrl+c to exit
 ```
 Stoker Internet Connectivity Checker Log File
 
-Date & Time: 2022-12-10 07:41:56
+Date & Time: 2022-12-13 16:35:28
 Stoker Machine: xxxxxxxxx
 MAC Address: xx:xx:xx:xx:xx:xx
 Public IP: 0.0.0.0
 Private IP: 0.0.0.0
 
-Time: 07:42:01 DNS Server: 208.67.220.220
+Time: 16:35:29 DNS Server: 149.112.112.112
 Results: 
 [+] Host is up
-Average Ping Time: 13ms
-Time: 07:42:26 DNS Server: 8.8.4.4
+[+] Ping Times: 19, 15, 14, 15
+
+Time: 16:36:05 DNS Server: 8.26.56.26
 Results: 
 [+] Host is up
-Average Ping Time: 18ms
-Time: 07:42:55 DNS Server: 8.26.56.26
+[+] Ping Times: 19, 15, 14, 15
+
+Time: 16:36:27 DNS Server: 176.103.130.130
 Results: 
 [+] Host is up
-Average Ping Time: 20ms
+[+] Ping Times: 19, 15, 14, 15
 ```
 
 ## Changelog
-### v1.1.1 (2022-12-13)
+### v1.1.2 (2022-12-13)
+- Got the ping times list to work in both Linux and Windows
+- Result file now contains ping times
+
+### v1.1.1 (2022-12-12)
 - Code clean up (It's not perfect but It's better than before)
 - There was problem with outputting ping results and averaging them so I temporary took it out of the code
 
