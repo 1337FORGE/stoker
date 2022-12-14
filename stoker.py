@@ -58,25 +58,25 @@ print(divider)
 
 
 # Main Functions
-# Defining sleep time function
+# Sleep time function
 def sleep_time():
     sleep_time = random.randint(10, 30)
     return sleep_time
 
   
-# Creating the year folder function
+# Year folder function
 def create_year_folder():
     if not os.path.exists(year_folder_name):
         os.makedirs(year_folder_name)
 
 
-# Creating the month folder in the year folder
+# Month folder in the year folder
 def create_month_folder():
     if not os.path.exists(year_folder_name + "/" + month_folder_name):
         os.makedirs(year_folder_name + "/" + month_folder_name)
 
 
-# Creating the log file
+# Log file function
 def create_log_file():
     if not os.path.exists(year_folder_name + "/" + month_folder_name + "/" + full_date + ".log"):
         log_file = open(year_folder_name + "/" +
@@ -96,7 +96,7 @@ def create_log_file():
         print("[-] Log file already exists")
 
 
-# Internet Connectivity Check``
+# Internet Connectivity Check
 def internet_connectivity():
     while True:
         try:
@@ -120,7 +120,7 @@ else:
     exit()
 
    
-# Ping commands based on Operation System
+# Pinging commands based on Operation Systems
 if operation_system == "Windows":
     # Windows
     ping_command = f"ping {chosen_dns_server}"
@@ -132,7 +132,7 @@ else:
     exit()
 
 
-# filter out the result between time= and ms and print it
+# filtering out the result between time= and ms and print it
 def ping_time():
     if operation_system == "Windows":
         ping_time = re.findall(r"time=(\d+)ms", ping_output)
